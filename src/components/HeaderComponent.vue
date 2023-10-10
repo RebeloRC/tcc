@@ -1,6 +1,6 @@
 <template>
-  <header class="container">
-    <div class="content">
+  <header class="header-container">
+    <div class="header-content">
       <nav>
         <router-link to="/">Home</router-link>
         <router-link to="/about">About</router-link>
@@ -24,20 +24,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
+.header-container {
   display: flex;
   align-items: center;
   justify-content: center;
 
   border-bottom: 1px solid #1a1f25;
-  position: fixed;
   width: 100%;
   top: 0;
   background: #222222;
   z-index: 9999;
 }
 
-.content {
+.header-content {
   max-width: 90rem;
   width: 100%;
   height: 5rem;
