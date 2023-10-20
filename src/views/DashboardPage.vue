@@ -62,6 +62,34 @@
             </div>
           </div>
         </section>
+        <section class="payment-methods-section">
+          <h3>Métodos de pagamento</h3>
+          <div class="payment-methods-container">
+            <div class="payment-method">
+              <h4>DÉBITO</h4>
+              <p>93</p>
+              <h5>vendas</h5>
+            </div>
+
+            <div class="payment-method">
+              <h4>BOLETO</h4>
+              <p>4</p>
+              <h5>vendas</h5>
+            </div>
+
+            <div class="payment-method">
+              <h4>PIX</h4>
+              <p>240</p>
+              <h5>vendas</h5>
+            </div>
+
+            <div class="payment-method">
+              <h4>PARCELADO</h4>
+              <p>143</p>
+              <h5>vendas</h5>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -91,6 +119,49 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.payment-methods-section {
+  margin-top: 5rem;
+
+  h3 {
+    margin-bottom: 2.5rem;
+    font: 700 1.5rem 'Roboto', sans-serif;
+  }
+  .payment-methods-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+
+    .payment-method {
+      width: 100%;
+      max-width: 23.75rem;
+      height: 12.56rem;
+
+      padding: 1.5rem;
+
+      border: 1px solid #666666;
+      border-radius: 20px;
+
+      background-color: #494949;
+
+      h4 {
+        text-align: right;
+        font: 700 2rem 'Roboto', sans-serif;
+        color: #939393;
+      }
+
+      p {
+        font: 700 3.75rem 'Roboto', sans-serif;
+        color: #939393;
+      }
+
+      h5 {
+        font: 700 2rem 'Roboto', sans-serif;
+        color: #939393;
+      }
+    }
+  }
 }
 
 .dashboard-content {
