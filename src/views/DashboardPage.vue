@@ -90,17 +90,23 @@
             </div>
           </div>
         </section>
+        <section>
+          <h3>Historico de vendas</h3>
+          <Chart></Chart>
+        </section>
       </div>
     </div>
   </div>
 </template>
 <script>
 import HeaderComponent from '../components/HeaderComponent.vue'
+import Chart from '../components/Chart.vue'
 
 export default {
   name: 'DashboardPage',
   components: {
-    HeaderComponent
+    HeaderComponent,
+    Chart
   },
   data() {
     return {}
