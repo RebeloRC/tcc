@@ -90,17 +90,23 @@
             </div>
           </div>
         </section>
+        <section class="sales-history-section">
+          <h3><b>Historico de vendas</b></h3>
+          <Chart></Chart>
+        </section>
       </div>
     </div>
   </div>
 </template>
 <script>
 import HeaderComponent from '../components/HeaderComponent.vue'
+import Chart from '../components/Chart.vue'
 
 export default {
   name: 'DashboardPage',
   components: {
-    HeaderComponent
+    HeaderComponent,
+    Chart
   },
   data() {
     return {}
@@ -119,6 +125,14 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.sales-history-section {
+  margin-top: 4.93rem;
+
+  h3 {
+    margin-bottom: 1.87rem;
+  }
 }
 
 .payment-methods-section {
