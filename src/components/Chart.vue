@@ -45,18 +45,18 @@ export default {
           enabledOnSeries: [1]
         },
         labels: [
-          '01 Jan 2001',
-          '02 Jan 2001',
-          '03 Jan 2001',
-          '04 Jan 2001',
-          '05 Jan 2001',
-          '06 Jan 2001',
-          '07 Jan 2001',
-          '08 Jan 2001',
-          '09 Jan 2001',
-          '10 Jan 2001',
-          '11 Jan 2001',
-          '12 Jan 2001'
+          'Jan 2023',
+          'Feb 2023',
+          'Mar 2023',
+          'Apr 2023',
+          'May 2023',
+          'Jun 2023',
+          'Jul 2023',
+          'Aug 2023',
+          'Sep 2023',
+          'Oct 2023',
+          'Nov 2023',
+          'Dec 2023'
         ],
         xaxis: {
           type: 'datetime'

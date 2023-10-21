@@ -90,8 +90,8 @@
             </div>
           </div>
         </section>
-        <section>
-          <h3>Historico de vendas</h3>
+        <section class="sales-history-section">
+          <h3><b>Historico de vendas</b></h3>
           <Chart></Chart>
         </section>
       </div>
@@ -125,6 +125,14 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.sales-history-section {
+  margin-top: 4.93rem;
+
+  h3 {
+    margin-bottom: 1.87rem;
+  }
 }
 
 .payment-methods-section {
