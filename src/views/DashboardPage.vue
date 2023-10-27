@@ -1,6 +1,10 @@
 <template>
   <div>
     <HeaderComponent />
+
+    <button @click="showModal = true">Abrir Modal</button>
+    <Modal :show-modal="showModal" @close-modal="showModal = false"></Modal>
+
     <div>
       <div class="dashboard-content">
         <h1>Inicio</h1>
@@ -8,7 +12,13 @@
           <div class="card">
             <div class="card-header">
               <div class="card-header-content">
-                <h3>Selecione um produto</h3>
+                <select>
+                  <option disabled value="">Please select one</option>
+                  <option selected>Heiniken Lata - 350ml</option>
+                  <option>Placa de vídeo RTX3060 TI</option>
+                  <option>Alexa - Amazon Echo Studio</option>
+                </select>
+                <div>&#9660;</div>
               </div>
             </div>
             <div class="card-body">
@@ -101,15 +111,19 @@
 <script>
 import HeaderComponent from '../components/HeaderComponent.vue'
 import Chart from '../components/Chart.vue'
+import Modal from '../components/Modal.vue'
 
 export default {
   name: 'DashboardPage',
   components: {
     HeaderComponent,
-    Chart
+    Chart,
+    Modal
   },
   data() {
-    return {}
+    return {
+      showModal: false
+    }
   },
   methods: {},
   mounted() {}
@@ -201,10 +215,38 @@ export default {
 
     .card-header {
       .card-header-content {
-        border-bottom: 1px solid #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-        h3 {
-          margin: 20px 20px;
+        select {
+          position: relative;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          background-color: transparent;
+          border: none;
+          outline: none;
+          color: white;
+          padding: 10px;
+          width: 100%;
+          cursor: pointer;
+          border-bottom: 2px solid #666666;
+          transition: 0.3s;
+        }
+        /* Estilize a borda inferior ao passar o mouse */
+        select:hover {
+          border-bottom: 2px solid #ffaa05; /* Altere a cor ao passar o mouse */
+        }
+
+        select option {
+          background-color: #333; /* Cor de fundo escura para as opções */
+          color: white; /* Cor do texto das opções */
+        }
+
+        /* Estilize as opções (menu suspenso) ao passar o mouse sobre elas */
+        select option:hover {
+          background-color: #555; /* Cor de fundo mais escura ao passar o mouse nas opções */
         }
       }
     }
