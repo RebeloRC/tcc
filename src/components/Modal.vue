@@ -3,7 +3,7 @@
     <div class="modal-backdrop">
       <div class="modal">
         <header class="modal-header">
-          <slot name="header"> This is the default title! </slot>
+          <slot name="header"> This is the default title!{{ modalType }} </slot>
           <button type="button" class="btn-close" @click="closeModal()">
             x
           </button>
@@ -27,10 +27,18 @@
 export default {
   name: 'Modal',
   props: {
-    showModal: Boolean
+    showModal: Boolean,
+    modalType: String
   },
   data() {
     return {}
+  },
+  watch: {
+    showModal(newVal) {
+      if (newVal) {
+        this.makeRequest()
+      }
+    }
   },
   methods: {
     closeModal() {
@@ -38,12 +46,13 @@ export default {
       console.log('Fechou!')
     },
 
-    getDebitSalesData() {
-      console.log('Requisição para pegar dados de vendas no débito')
-    },
-
-    getPixSalesData() {
-      console.log('Requisição para pegar dados de vendas no PIX')
+    makeRequest() {
+      // Faça a requisição com base no valor de this
+      if (this.modalType === 'tipo1') {
+        console.log('Fazendo requisição do tipo 1...')
+      } else if (this.modalType === 'tipo2') {
+        console.log('Fazendo requisição do tipo 2...')
+      }
     }
   }
 }

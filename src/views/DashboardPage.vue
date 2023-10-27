@@ -2,8 +2,12 @@
   <div>
     <HeaderComponent />
 
-    <button @click="showModal = true">Abrir Modal</button>
-    <Modal :show-modal="showModal" @close-modal="showModal = false"></Modal>
+    <button @click="openModalWithRequestType('tipo2')">Abrir Modal</button>
+    <Modal
+      :show-modal="showModal"
+      :modal-type="modalType"
+      @close-modal="showModal = false"
+    ></Modal>
 
     <div>
       <div class="dashboard-content">
@@ -122,10 +126,16 @@ export default {
   },
   data() {
     return {
-      showModal: false
+      showModal: false,
+      modalType: ''
     }
   },
-  methods: {},
+  methods: {
+    openModalWithRequestType(type) {
+      this.modalType = type
+      this.showModal = true
+    }
+  },
   mounted() {}
 }
 </script>
