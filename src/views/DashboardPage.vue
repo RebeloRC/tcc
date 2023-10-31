@@ -2,7 +2,7 @@
   <div>
     <HeaderComponent />
 
-    <button @click="openModalWithRequestType('tipo2')">Abrir Modal</button>
+    <!-- <button @click="openModalWithRequestType('tipo2')">Abrir Modal</button> -->
     <Modal
       :show-modal="showModal"
       :modal-type="modalType"
@@ -51,7 +51,7 @@
             <div class="sales-card">
               <div class="sales-card-header">
                 <p>Item</p>
-                <p>(qt.vendas)</p>
+                <p>Lift</p>
               </div>
               <div class="sales-card-datail">
                 <p>Fralda</p>
@@ -79,25 +79,37 @@
         <section class="payment-methods-section">
           <h3>Métodos de pagamento</h3>
           <div class="payment-methods-container">
-            <div class="payment-method">
+            <div
+              class="payment-method"
+              @click="openModalWithRequestType('DEBITO')"
+            >
               <h4>DÉBITO</h4>
               <p>93</p>
               <h5>vendas</h5>
             </div>
 
-            <div class="payment-method">
+            <div
+              class="payment-method"
+              @click="openModalWithRequestType('BOLETO')"
+            >
               <h4>BOLETO</h4>
               <p>4</p>
               <h5>vendas</h5>
             </div>
 
-            <div class="payment-method">
+            <div
+              class="payment-method"
+              @click="openModalWithRequestType('PIX')"
+            >
               <h4>PIX</h4>
               <p>240</p>
               <h5>vendas</h5>
             </div>
 
-            <div class="payment-method">
+            <div
+              class="payment-method"
+              @click="openModalWithRequestType('PARCELADO')"
+            >
               <h4>PARCELADO</h4>
               <p>143</p>
               <h5>vendas</h5>
@@ -306,7 +318,7 @@ export default {
         justify-content: space-between;
         align-items: center;
 
-        font-size: 0.7rem;
+        font-size: 0.8rem;
       }
 
       .sales-card-datail {
