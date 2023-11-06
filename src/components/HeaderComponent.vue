@@ -2,9 +2,8 @@
   <header class="header-container">
     <div class="header-content">
       <nav>
-        <router-link to="/">Home</router-link>
-        <router-link to="/about">About</router-link>
-        <router-link to="/contact">Contact</router-link>
+        <router-link to="/">Dashboard</router-link>
+        <router-link to="/about">Clientes</router-link>
       </nav>
       <div>
         <p>Olá, Rodrigo Rebelo</p>

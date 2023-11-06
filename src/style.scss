@@ -9,7 +9,7 @@ body{
   color: #FFFFFF;
   background-color: #323232;
   
-  font-family: 'Inter', sans-serif;
+  font-family:  'Roboto', sans-serif;
   font-weight: 400;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -17,4 +17,17 @@ body{
 
 html {
   scroll-behavior: smooth;
+}
+
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
