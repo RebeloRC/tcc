@@ -5,14 +5,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Login',
+      name: 'Dashboard',
       component: () => import('../views/DashboardPage.vue')
     },
-    // {
-    //   path: '/dashboard',
-    //   name: 'dashboard',
-    //   component: () => import('../views/DashboardPage.vue')
-    // }
+    {
+      path: '/customers',
+      name: 'Customers',
+      component: () => import('../views/CustomersPage.vue')
+    }
   ]
 })
 

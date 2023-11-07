@@ -3,7 +3,7 @@
     <div class="header-content">
       <nav>
         <router-link to="/">Dashboard</router-link>
-        <router-link to="/about">Clientes</router-link>
+        <router-link to="/customers">Clientes</router-link>
       </nav>
       <div>
         <p>Olá, Rodrigo Rebelo</p>
