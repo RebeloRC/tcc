@@ -1,71 +1,84 @@
 <template>
   <div>
     <HeaderComponent />
-    <div class="customers-page-content">
-      <h1 class="title">Segmentação por clientes</h1>
-      <div class="filter-section">
-        <div class="filter-container">
-          <h3>Selecione o perfil:</h3>
-          <div class="divider"></div>
-          <input type="text" placeholder="Pesquisar cliente" />
+
+    <div class="customers-page-container">
+      <div class="customers-page-content">
+        <h1 class="title">Segmentação por clientes</h1>
+        <div class="filter-section">
+          <div class="filter-container">
+            <h3>Selecione o perfil:</h3>
+            <div class="divider"></div>
+            <select placeholder="Pesquisar Perfil">
+              <option value="1">Cliente 1</option>
+              <option value="2">Cliente 2</option>
+              <option value="3">Cliente 3</option>
+            </select>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-search"><i class="bi bi-search"></i></button>
+            <button class="btn-delete"><i class="bi bi-x"></i></button>
+          </div>
         </div>
-        <button class="btn-search"><i class="bi bi-search"></i></button>
-        <button class="btn-delete"><i class="bi bi-x"></i></button>
-      </div>
 
-      <div class="modal">
-        <header class="modal-header">
-          <h1>Teste</h1>
-        </header>
+        <div class="modal">
+          <header class="modal-header">
+            <h1>Teste</h1>
+          </header>
 
-        <section class="modal-body">
-          <table class="custom-table">
-            <thead>
-              <tr style="font-size: 1.5rem">
-                <th>Cliente</th>
-                <th>Data de Compra</th>
-                <th>Quantidade</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(item, index) in tableData" :key="index">
-                <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
-                  <td @click="toggleAccordion(item)">{{ item.cliente }}</td>
-                  <td @click="toggleAccordion(item)">{{ item.dataCompra }}</td>
-                  <td @click="toggleAccordion(item)">{{ item.quantidade }}</td>
+          <section class="modal-body">
+            <table class="custom-table">
+              <thead>
+                <tr style="font-size: 1.5rem">
+                  <th>Cliente</th>
+                  <th>Data de Compra</th>
+                  <th>Quantidade</th>
                 </tr>
-                <tr v-if="item.showAssociatedProducts">
-                  <td :colspan="3" style="background-color: #3c3c3c">
-                    <h3 style="text-align: left">Produtos Associados</h3>
-                    <table style="width: 100%">
-                      <thead>
-                        <tr>
-                          <th>Produto</th>
-                          <th>Categoria</th>
-                          <th>Quantidade</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <template
-                          v-for="(
-                            associatedProduct, index
-                          ) in item.associatedProducts"
-                          :key="index"
-                        >
-                          <tr class="teste">
-                            <td>{{ associatedProduct.nome }}</td>
-                            <td>{{ associatedProduct.categoria }}</td>
-                            <td>{{ associatedProduct.quantidade }}</td>
+              </thead>
+              <tbody>
+                <template v-for="(item, index) in tableData" :key="index">
+                  <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
+                    <td @click="toggleAccordion(item)">{{ item.cliente }}</td>
+                    <td @click="toggleAccordion(item)">
+                      {{ item.dataCompra }}
+                    </td>
+                    <td @click="toggleAccordion(item)">
+                      {{ item.quantidade }}
+                    </td>
+                  </tr>
+                  <tr v-if="item.showAssociatedProducts">
+                    <td :colspan="3" style="background-color: #3c3c3c">
+                      <h3 style="text-align: left">Produtos Associados</h3>
+                      <table style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Quantidade</th>
                           </tr>
-                        </template>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </section>
+                        </thead>
+                        <tbody>
+                          <template
+                            v-for="(
+                              associatedProduct, index
+                            ) in item.associatedProducts"
+                            :key="index"
+                          >
+                            <tr class="teste">
+                              <td>{{ associatedProduct.nome }}</td>
+                              <td>{{ associatedProduct.categoria }}</td>
+                              <td>{{ associatedProduct.quantidade }}</td>
+                            </tr>
+                          </template>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </section>
+        </div>
       </div>
     </div>
   </div>
@@ -115,31 +128,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.btn-search {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+.buttons-container {
+  .btn-search {
+    width: 3rem;
+    height: 3rem;
 
-  background-color: #ffaa05;
+    margin-left: 0.5rem;
 
-  text-align: center;
+    border-radius: 10px;
 
-  i {
-    font-size: 1rem;
+    background-color: #ffaa05;
+
+    text-align: center;
+
+    i {
+      font-size: 1rem;
+    }
   }
-}
 
-.btn-delete {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  .btn-delete {
+    width: 3rem;
+    height: 3rem;
 
-  background-color: #ff0000;
+    margin-left: 0.3rem;
 
-  text-align: center;
+    border-radius: 10px;
 
-  i {
-    font-size: 1rem;
+    background-color: #ff0000;
+
+    text-align: center;
+
+    i {
+      font-size: 1rem;
+    }
   }
 }
 
@@ -169,7 +190,9 @@ export default {
     height: 40px;
   }
 
-  input {
+  select {
+    color: #fff;
+
     background-color: #494949;
 
     width: 20rem;
@@ -185,8 +208,15 @@ export default {
   }
 }
 
+.customers-page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .customers-page-content {
   max-width: 90rem;
+  width: 100%;
 
   margin-top: 5rem;
   padding: 0 2rem;
@@ -206,7 +236,7 @@ export default {
 
 .modal {
   background: #494949;
-  width: 80vw;
+  margin-top: 2rem;
   height: 80vh;
   padding: 3rem 4rem;
   border-radius: 15px;

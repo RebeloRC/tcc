@@ -1,15 +1,13 @@
 <template>
   <div>
     <HeaderComponent />
-
-    <!-- <button @click="openModalWithRequestType('tipo2')">Abrir Modal</button> -->
     <Modal
       :show-modal="showModal"
       :modal-type="modalType"
       @close-modal="showModal = false"
     ></Modal>
 
-    <div>
+    <div class="dashboard-container">
       <div class="dashboard-content">
         <h1>Inicio</h1>
         <section class="section-container">
@@ -214,8 +212,17 @@ export default {
   }
 }
 
+.dashboard-container {
+  padding-top: 2rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .dashboard-content {
   max-width: 90rem;
+  width: 100%;
 
   margin-top: 5rem;
   padding: 0 2rem;
