@@ -31,22 +31,24 @@
               <thead>
                 <tr style="font-size: 1.5rem">
                   <th>Cliente</th>
-                  <th>Data de Compra</th>
-                  <th>Quantidade</th>
+                  <th>Perfil do cliente</th>
+                  <th>Idade</th>
                 </tr>
               </thead>
               <tbody>
-                <template v-for="(item, index) in tableData" :key="index">
+                <template v-for="(customer, index) in customers" :key="index">
                   <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
-                    <td @click="toggleAccordion(item)">{{ item.cliente }}</td>
                     <td @click="toggleAccordion(item)">
-                      {{ item.dataCompra }}
+                      {{ customer.nome }}
                     </td>
                     <td @click="toggleAccordion(item)">
-                      {{ item.quantidade }}
+                      {{ customer.perfil_cliente }}
+                    </td>
+                    <td @click="toggleAccordion(item)">
+                      {{ customer.idade }}
                     </td>
                   </tr>
-                  <tr v-if="item.showAssociatedProducts">
+                  <!-- <tr v-if="item.showAssociatedProducts">
                     <td :colspan="3" style="background-color: #3c3c3c">
                       <h3 style="text-align: left">Produtos Associados</h3>
                       <table style="width: 100%">
@@ -73,7 +75,7 @@
                         </tbody>
                       </table>
                     </td>
-                  </tr>
+                  </tr> -->
                 </template>
               </tbody>
             </table>
@@ -95,6 +97,8 @@ export default {
   },
   data() {
     return {
+      customers: [],
+
       tableData: [
         {
           cliente: 'Cliente 1',
@@ -119,9 +123,26 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.getCustomers()
+  },
   methods: {
     toggleAccordion(product) {
       product.showAssociatedProducts = !product.showAssociatedProducts
+    },
+
+    async getCustomers() {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/clientes/segmentacao`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      const data = await response.json()
+      this.customers = data
     }
   }
 }

@@ -19,13 +19,17 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="(item, index) in tableData" :key="index">
+              <template v-for="(sale, index) in sales" :key="index">
                 <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
-                  <td @click="toggleAccordion(item)">{{ item.cliente }}</td>
-                  <td @click="toggleAccordion(item)">{{ item.dataCompra }}</td>
-                  <td @click="toggleAccordion(item)">{{ item.quantidade }}</td>
+                  <td @click="toggleAccordion(item)">
+                    {{ sale.nome_cliente }}
+                  </td>
+                  <td @click="toggleAccordion(item)">{{ sale.data_venda }}</td>
+                  <td @click="toggleAccordion(item)">
+                    {{ sale.produtos_comprados_junto.length }}
+                  </td>
                 </tr>
-                <tr v-if="item.showAssociatedProducts">
+                <tr v-if="sale.produtos_comprados_junto">
                   <td :colspan="3" style="background-color: #3c3c3c">
                     <h3 style="text-align: left">Produtos Associados</h3>
                     <table style="width: 100%">
@@ -40,13 +44,13 @@
                         <template
                           v-for="(
                             associatedProduct, index
-                          ) in item.associatedProducts"
+                          ) in sale.produtos_comprados_junto"
                           :key="index"
                         >
                           <tr class="teste">
-                            <td>{{ associatedProduct.nome }}</td>
-                            <td>{{ associatedProduct.categoria }}</td>
-                            <td>{{ associatedProduct.quantidade }}</td>
+                            <td>{{ associatedProduct.produto_comprado }}</td>
+                            <td>{{ associatedProduct.categoria_comprada }}</td>
+                            <td>{{ associatedProduct.preco_comprado }}</td>
                           </tr>
                         </template>
                       </tbody>
@@ -73,10 +77,13 @@ export default {
   name: 'Modal',
   props: {
     showModal: Boolean,
-    modalType: String
+    modalType: String,
+    modalProductId: Number
   },
   data() {
     return {
+      sales: [],
+
       tableData: [
         {
           cliente: 'Cliente 1',
@@ -104,7 +111,7 @@ export default {
   watch: {
     showModal(newVal) {
       if (newVal) {
-        this.makeRequest()
+        this.getSales(this.modalProductId, this.modalType)
       }
     }
   },
@@ -118,18 +125,20 @@ export default {
       console.log('Fechou!')
     },
 
-    makeRequest() {
-      if (this.modalType === 'PIX') {
-        console.log('Fazendo requisição do PIX...')
-      } else if (this.modalType === 'PARCELADO') {
-        console.log('Fazendo requisição do PARCELADO...')
-      } else if (this.modalType === 'BOLETO') {
-        console.log('Fazendo requisição do BOLETO...')
-      } else if (this.modalType === 'DEBITO') {
-        console.log('Fazendo requisição do DEBITO...')
-      } else {
-        console.log('Modal type não encontrado!')
-      }
+    async getSales(producId, paymentMethod) {
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/produtos/info/vendas?id=${producId}&type=${paymentMethod}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      const data = await response.json()
+      this.sales = data
     }
   }
 }

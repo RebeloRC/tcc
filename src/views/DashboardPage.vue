@@ -4,6 +4,7 @@
     <Modal
       :show-modal="showModal"
       :modal-type="modalType"
+      :modal-product-id="modalProductId"
       @close-modal="showModal = false"
     ></Modal>
 
@@ -13,12 +14,20 @@
         <section class="section-container">
           <div class="card">
             <div class="card-header">
+              {{ productCurrentinView }}
               <div class="card-header-content">
-                <select>
-                  <option disabled value="">Please select one</option>
-                  <option selected>Heiniken Lata - 350ml</option>
-                  <option>Placa de vídeo RTX3060 TI</option>
-                  <option>Alexa - Amazon Echo Studio</option>
+                <select
+                  v-model="selectedProduct"
+                  @change="this.getProductDetail(selectedProduct)"
+                >
+                  <option selected value="" disabled>Please select one</option>
+                  <option
+                    v-for="(product, index) in avaliableProducts"
+                    :key="index"
+                    :value="product.id"
+                  >
+                    {{ product.nome }}
+                  </option>
                 </select>
                 <div>&#9660;</div>
               </div>
@@ -27,10 +36,10 @@
               <div class="card-body-content">
                 <img src="src/assets/imgs/heineken.png" alt="Heineken" />
                 <div class="card-content-container">
-                  <h3>Heiniken Lata - 350ml</h3>
+                  <h3>{{ productCurrentinView.produto_nome }}</h3>
                   <div class="card-content-detail">
                     <p>Valor:</p>
-                    <b>R$ 23,25</b>
+                    <b>R$ {{ productCurrentinView.produto_preco }}</b>
                   </div>
                   <div class="card-content-detail">
                     <p>Vendidos:</p>
@@ -79,37 +88,54 @@
           <div class="payment-methods-container">
             <div
               class="payment-method"
-              @click="openModalWithRequestType('DEBITO')"
+              @click="
+                openModalWithRequestType(
+                  productCurrentinView.produto_id,
+                  'DEBITO'
+                )
+              "
             >
               <h4>DÉBITO</h4>
-              <p>93</p>
+              <p>{{ productCurrentinView.débito }}</p>
               <h5>vendas</h5>
             </div>
 
             <div
               class="payment-method"
-              @click="openModalWithRequestType('BOLETO')"
+              @click="
+                openModalWithRequestType(
+                  productCurrentinView.produto_id,
+                  'boleto'
+                )
+              "
             >
               <h4>BOLETO</h4>
-              <p>4</p>
+              <p>{{ productCurrentinView.boleto }}</p>
               <h5>vendas</h5>
             </div>
 
             <div
               class="payment-method"
-              @click="openModalWithRequestType('PIX')"
+              @click="
+                openModalWithRequestType(productCurrentinView.produto_id, 'PIX')
+              "
             >
               <h4>PIX</h4>
-              <p>240</p>
+              <p>{{ productCurrentinView.boleto }}</p>
               <h5>vendas</h5>
             </div>
 
             <div
               class="payment-method"
-              @click="openModalWithRequestType('PARCELADO')"
+              @click="
+                openModalWithRequestType(
+                  productCurrentinView.produto_id,
+                  'PARCELADO'
+                )
+              "
             >
               <h4>PARCELADO</h4>
-              <p>143</p>
+              <p>{{ productCurrentinView.credito }}</p>
               <h5>vendas</h5>
             </div>
           </div>
@@ -136,17 +162,55 @@ export default {
   },
   data() {
     return {
+      selectedProduct: '',
+      productCurrentinView: {},
+
+      avaliableProducts: [],
+
       showModal: false,
-      modalType: ''
+      modalType: '',
+      modalProductId: null
     }
+  },
+  mounted() {
+    this.getProducts()
   },
   methods: {
-    openModalWithRequestType(type) {
+    async getProducts() {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/produtos`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      const data = await response.json()
+      this.avaliableProducts = data
+    },
+
+    openModalWithRequestType(productId, type) {
+      this.modalProductId = productId
       this.modalType = type
       this.showModal = true
+    },
+
+    async getProductDetail(ProductId) {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/produtos/info?id=${ProductId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      const data = await response.json()
+      console.log(data[0])
+      this.productCurrentinView = data[0]
     }
-  },
-  mounted() {}
+  }
 }
 </script>
 
