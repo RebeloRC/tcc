@@ -10,7 +10,7 @@
         <router-link
           v-bind:style="activePage === 'Customers' ? 'color: #ffaa05;' : ''"
           to="customers"
-          >Customers</router-link
+          >Clientes</router-link
         >
       </nav>
       <div>

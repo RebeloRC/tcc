@@ -14,7 +14,7 @@
         <section class="section-container">
           <div class="card">
             <div class="card-header">
-              {{ productCurrentinView }}
+              <!-- {{ productCurrentinView }} -->
               <div class="card-header-content">
                 <select
                   v-model="selectedProduct"
@@ -34,7 +34,9 @@
             </div>
             <div class="card-body">
               <div class="card-body-content">
-                <img src="src/assets/imgs/heineken.png" alt="Heineken" />
+                <div class="img-container">
+                  <img :src="productCurrentinView.url_photo" alt="Heineken" />
+                </div>
                 <div class="card-content-container">
                   <h3>{{ productCurrentinView.produto_nome }}</h3>
                   <div class="card-content-detail">
@@ -43,11 +45,11 @@
                   </div>
                   <div class="card-content-detail">
                     <p>Vendidos:</p>
-                    <b>480</b>
+                    <b>{{ productCurrentinView.historico_vendas?.length }}</b>
                   </div>
                   <div class="card-content-detail">
                     <p>Principal método:</p>
-                    <b>Boleto</b>
+                    <b>{{ productCurrentinView.metodo_principal_pagamento }}</b>
                   </div>
                 </div>
               </div>
@@ -60,26 +62,26 @@
                 <p>Item</p>
                 <p>Lift</p>
               </div>
-              <div class="sales-card-datail">
-                <p>Fralda</p>
-                <div class="progress-container"></div>
-                <p>50</p>
-              </div>
-              <div class="sales-card-datail">
-                <p>Fralda</p>
-                <div class="progress-container"></div>
-                <p>50</p>
-              </div>
-              <div class="sales-card-datail">
-                <p>Fralda</p>
-                <div class="progress-container"></div>
-                <p>50</p>
-              </div>
-              <div class="sales-card-datail">
-                <p>Fralda</p>
-                <div class="progress-container"></div>
-                <p>50</p>
-              </div>
+
+              <template
+                v-for="(
+                  recomendacao, index
+                ) in productCurrentinView?.recomendacoes"
+                :key="index"
+              >
+                <div class="sales-card-datail">
+                  <p>{{ recomendacao.produto_consequentemente_comprado }}</p>
+                  <div class="progress-container">
+                    <div
+                      class="bar-progress"
+                      :style="{ width: recomendacao.confianca + '%' }"
+                    >
+                      <p>{{ recomendacao.confianca + '%' }}</p>
+                    </div>
+                  </div>
+                  <p>{{ recomendacao.lift.toFixed(2) }}</p>
+                </div>
+              </template>
             </div>
           </div>
         </section>
@@ -91,7 +93,7 @@
               @click="
                 openModalWithRequestType(
                   productCurrentinView.produto_id,
-                  'DEBITO'
+                  'debito'
                 )
               "
             >
@@ -117,11 +119,11 @@
             <div
               class="payment-method"
               @click="
-                openModalWithRequestType(productCurrentinView.produto_id, 'PIX')
+                openModalWithRequestType(productCurrentinView.produto_id, 'pix')
               "
             >
               <h4>PIX</h4>
-              <p>{{ productCurrentinView.boleto }}</p>
+              <p>{{ productCurrentinView.pix }}</p>
               <h5>vendas</h5>
             </div>
 
@@ -142,7 +144,9 @@
         </section>
         <section class="sales-history-section">
           <h3><b>Historico de vendas</b></h3>
-          <Chart></Chart>
+          <Chart
+            :series-data="productCurrentinView?.quantidade_por_mes"
+          ></Chart>
         </section>
       </div>
     </div>
@@ -207,7 +211,6 @@ export default {
         }
       )
       const data = await response.json()
-      console.log(data[0])
       this.productCurrentinView = data[0]
     }
   }
@@ -217,6 +220,19 @@ export default {
 <style lang="scss">
 .container {
   margin-top: 7.5rem;
+}
+
+.img-container {
+  width: 30%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .section-container {
@@ -400,19 +416,27 @@ export default {
         margin-top: 1.56rem;
 
         .progress-container {
-          width: 80%;
+          width: 20rem;
           height: 0.5rem;
           border-radius: 0.25rem;
 
           background-color: #666666;
 
-          &::after {
-            border-radius: 0.25rem;
-            content: '';
-            display: block;
+          .bar-progress {
             width: 50%;
             height: 100%;
+            border-radius: 0.25rem;
+
             background-color: #ffaa05;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            p {
+              font-size: 0.7rem;
+              color: #fff;
+            }
           }
         }
       }

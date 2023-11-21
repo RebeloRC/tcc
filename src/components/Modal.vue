@@ -21,15 +21,17 @@
             <tbody>
               <template v-for="(sale, index) in sales" :key="index">
                 <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
-                  <td @click="toggleAccordion(item)">
+                  <td @click="toggleAccordion(sale)">
                     {{ sale.nome_cliente }}
                   </td>
-                  <td @click="toggleAccordion(item)">{{ sale.data_venda }}</td>
-                  <td @click="toggleAccordion(item)">
-                    {{ sale.produtos_comprados_junto.length }}
+                  <td @click="toggleAccordion(sale)">
+                    {{ formatarDataVenda(sale.data_venda) }}
+                  </td>
+                  <td @click="toggleAccordion(sale)">
+                    {{ sale.produtos_comprados_junto?.length }}
                   </td>
                 </tr>
-                <tr v-if="sale.produtos_comprados_junto">
+                <tr v-if="sale.open">
                   <td :colspan="3" style="background-color: #3c3c3c">
                     <h3 style="text-align: left">Produtos Associados</h3>
                     <table style="width: 100%">
@@ -73,6 +75,8 @@
   </transition>
 </template>
 <script>
+import { dateDefaultFormatWithoutTime } from '../utils/dateUtils'
+
 export default {
   name: 'Modal',
   props: {
@@ -115,9 +119,16 @@ export default {
       }
     }
   },
+  mounted() {
+    var teste = dateDefaultFormatWithoutTime('2023-08-01T00:00:00.000Z')
+  },
   methods: {
+    formatarDataVenda(dataString) {
+      return dateDefaultFormatWithoutTime(dataString)
+    },
+
     toggleAccordion(product) {
-      product.showAssociatedProducts = !product.showAssociatedProducts
+      product.open = !product.open
     },
 
     closeModal() {
