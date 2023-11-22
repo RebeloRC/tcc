@@ -20,7 +20,7 @@
             </thead>
             <tbody>
               <template v-for="(sale, index) in sales" :key="index">
-                <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
+                <tr class="table-body" style="border-bottom: 2px solid #5b5b5b">
                   <td @click="toggleAccordion(sale)">
                     {{ sale.nome_cliente }}
                   </td>
@@ -39,7 +39,7 @@
                         <tr>
                           <th>Produto</th>
                           <th>Categoria</th>
-                          <th>Quantidade</th>
+                          <th>Preço</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -49,10 +49,10 @@
                           ) in sale.produtos_comprados_junto"
                           :key="index"
                         >
-                          <tr class="teste">
+                          <tr class="table-body">
                             <td>{{ associatedProduct.produto_comprado }}</td>
                             <td>{{ associatedProduct.categoria_comprada }}</td>
-                            <td>{{ associatedProduct.preco_comprado }}</td>
+                            <td>R${{ associatedProduct.preco_comprado }}</td>
                           </tr>
                         </template>
                       </tbody>
@@ -118,9 +118,6 @@ export default {
         this.getSales(this.modalProductId, this.modalType)
       }
     }
-  },
-  mounted() {
-    var teste = dateDefaultFormatWithoutTime('2023-08-01T00:00:00.000Z')
   },
   methods: {
     formatarDataVenda(dataString) {
@@ -218,11 +215,11 @@ export default {
       padding: 10px;
     }
 
-    tbody .teste {
+    tbody .table-body {
       transition: 0.3s;
     }
 
-    tbody .teste:hover {
+    tbody .table-body:hover {
       background-color: #5b5b5b;
     }
   }

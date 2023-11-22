@@ -14,7 +14,6 @@
         <section class="section-container">
           <div class="card">
             <div class="card-header">
-              <!-- {{ productCurrentinView }} -->
               <div class="card-header-content">
                 <select
                   v-model="selectedProduct"
@@ -38,7 +37,9 @@
                   <img :src="productCurrentinView.url_photo" alt="Heineken" />
                 </div>
                 <div class="card-content-container">
-                  <h3>{{ productCurrentinView.produto_nome }}</h3>
+                  <h3 style="text-align: left">
+                    {{ productCurrentinView.produto_nome }}
+                  </h3>
                   <div class="card-content-detail">
                     <p>Valor:</p>
                     <b>R$ {{ productCurrentinView.produto_preco }}</b>
@@ -60,6 +61,7 @@
             <div class="sales-card">
               <div class="sales-card-header">
                 <p>Item</p>
+                <p>Confiaça</p>
                 <p>Lift</p>
               </div>
 
