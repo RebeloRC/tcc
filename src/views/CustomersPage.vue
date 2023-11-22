@@ -9,10 +9,11 @@
           <div class="filter-container">
             <h3>Selecione o perfil:</h3>
             <div class="divider"></div>
-            <select placeholder="Pesquisar Perfil">
-              <option value="1">Cliente 1</option>
-              <option value="2">Cliente 2</option>
-              <option value="3">Cliente 3</option>
+            <select v-model="categoryFilter" placeholder="Pesquisar Perfil">
+              <option value="" selected disabled>
+                <i>Selecione uma categoria</i>
+              </option>
+              <option value="Informatica">Informatica</option>
             </select>
           </div>
           <div class="buttons-container">
@@ -23,7 +24,7 @@
 
         <div class="modal">
           <header class="modal-header">
-            <h1>Teste</h1>
+            <h1>Clientes</h1>
           </header>
 
           <section class="modal-body">
@@ -37,45 +38,54 @@
               </thead>
               <tbody>
                 <template v-for="(customer, index) in customers" :key="index">
-                  <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
-                    <td @click="toggleAccordion(item)">
-                      {{ customer.nome }}
+                  <tr
+                    class="table-body"
+                    style="border-bottom: 2px solid #5b5b5b"
+                  >
+                    <td @click="toggleAccordion(customer)">
+                      {{ customer.cliente_nome }}
                     </td>
-                    <td @click="toggleAccordion(item)">
-                      {{ customer.perfil_cliente }}
+                    <td @click="toggleAccordion(customer)">
+                      {{ customer.cliente_cluster }}
                     </td>
-                    <td @click="toggleAccordion(item)">
-                      {{ customer.idade }}
+                    <td @click="toggleAccordion(customer)">
+                      {{ customer.cliente_idade }}
                     </td>
                   </tr>
-                  <!-- <tr v-if="item.showAssociatedProducts">
+                  <tr v-if="customer.open">
                     <td :colspan="3" style="background-color: #3c3c3c">
-                      <h3 style="text-align: left">Produtos Associados</h3>
+                      <h3 style="text-align: left">Histórico de compras</h3>
                       <table style="width: 100%">
                         <thead>
                           <tr>
                             <th>Produto</th>
-                            <th>Categoria</th>
-                            <th>Quantidade</th>
+                            <th>Preço</th>
+                            <th>Data</th>
                           </tr>
                         </thead>
                         <tbody>
                           <template
                             v-for="(
                               associatedProduct, index
-                            ) in item.associatedProducts"
+                            ) in customer.compras"
                             :key="index"
                           >
-                            <tr class="teste">
-                              <td>{{ associatedProduct.nome }}</td>
-                              <td>{{ associatedProduct.categoria }}</td>
-                              <td>{{ associatedProduct.quantidade }}</td>
+                            <tr class="table-body">
+                              <td>{{ associatedProduct.produto_nome }}</td>
+                              <td>R${{ associatedProduct.produto_preco }}</td>
+                              <td>
+                                {{
+                                  formatarDataVenda(
+                                    associatedProduct.data_compra
+                                  )
+                                }}
+                              </td>
                             </tr>
                           </template>
                         </tbody>
                       </table>
                     </td>
-                  </tr> -->
+                  </tr>
                 </template>
               </tbody>
             </table>
@@ -87,6 +97,8 @@
 </template>
 
 <script>
+import { dateDefaultFormatWithoutTime } from '../utils/dateUtils'
+
 import HeaderComponent from '../components/HeaderComponent.vue'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
@@ -99,41 +111,42 @@ export default {
     return {
       customers: [],
 
-      tableData: [
-        {
-          cliente: 'Cliente 1',
-          dataCompra: '10/01/2023',
-          quantidade: 5,
-          showAssociatedProducts: false,
-          associatedProducts: [
-            { nome: 'Produto A', categoria: 'Categoria X', quantidade: 2 },
-            { nome: 'Produto B', categoria: 'Categoria Y', quantidade: 3 }
-          ]
-        },
-        {
-          cliente: 'Cliente 2',
-          dataCompra: '10/01/2023',
-          quantidade: 5,
-          showAssociatedProducts: false,
-          associatedProducts: [
-            { nome: 'Produto C', categoria: 'Categoria X', quantidade: 2 },
-            { nome: 'Produto D', categoria: 'Categoria Y', quantidade: 3 }
-          ]
-        }
-      ]
+      categoryFilter: ''
     }
   },
   mounted() {
     this.getCustomers()
   },
   methods: {
+    formatarDataVenda(dataString) {
+      return dateDefaultFormatWithoutTime(dataString)
+    },
+
+    async filterCustomersByCategory(category) {
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/clientes/segmentacao?segmento=${category}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      const data = await response.json()
+      this.customers = data
+    },
+
     toggleAccordion(product) {
-      product.showAssociatedProducts = !product.showAssociatedProducts
+      product.open = !product.open
     },
 
     async getCustomers() {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/clientes/segmentacao`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/clientes/segmentacao?segmento=Informatica`,
         {
           method: 'GET',
           headers: {
@@ -305,11 +318,11 @@ export default {
       padding: 10px;
     }
 
-    tbody .teste {
+    tbody .table-body {
       transition: 0.3s;
     }
 
-    tbody .teste:hover {
+    tbody .table-body:hover {
       background-color: #5b5b5b;
     }
   }

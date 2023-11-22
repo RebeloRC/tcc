@@ -35,7 +35,7 @@ export default {
           width: [0, 4]
         },
         title: {
-          text: 'Traffic Sources'
+          text: 'Vendas por mês'
         },
         dataLabels: {
           enabled: true,
@@ -61,13 +61,13 @@ export default {
         yaxis: [
           {
             title: {
-              text: 'Website Blog'
+              text: 'Dados em barra'
             }
           },
           {
             opposite: true,
             title: {
-              text: 'Social Media'
+              text: 'Dados em linha'
             }
           }
         ],
@@ -92,13 +92,13 @@ export default {
 
       this.$refs.chart.updateSeries([
         {
-          name: 'Website Blog',
+          name: 'Dados em barra',
           type: 'column',
           data: newData,
           color: '#FFAA05'
         },
         {
-          name: 'Social Media',
+          name: 'Dados em linha',
           type: 'line',
           data: newData,
           color: '#00FF66'
