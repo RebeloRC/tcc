@@ -1,6 +1,7 @@
 <template>
-  <div id="chart">
+  <div>
     <apexchart
+      ref="chart"
       type="line"
       height="350"
       :options="chartOptions"
@@ -11,22 +12,18 @@
 
 <script>
 export default {
+  props: {
+    seriesData: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
-      series: [
-        {
-          name: 'Website Blog',
-          type: 'column',
-          data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160],
-          color: '#FFAA05'
-        },
-        {
-          name: 'Social Media',
-          type: 'line',
-          data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16],
-          color: '#00FF66'
-        }
-      ],
+      series: [],
+      noData: {
+        text: 'Loading...'
+      },
       chartOptions: {
         chart: {
           foreColor: '#ffffff',
@@ -38,7 +35,7 @@ export default {
           width: [0, 4]
         },
         title: {
-          text: 'Traffic Sources'
+          text: 'Vendas por mês'
         },
         dataLabels: {
           enabled: true,
@@ -64,13 +61,13 @@ export default {
         yaxis: [
           {
             title: {
-              text: 'Website Blog'
+              text: 'Dados em barra'
             }
           },
           {
             opposite: true,
             title: {
-              text: 'Social Media'
+              text: 'Dados em linha'
             }
           }
         ],
@@ -80,6 +77,33 @@ export default {
           }
         }
       }
+    }
+  },
+  watch: {
+    seriesData(newVal) {
+      if (newVal) {
+        this.updateChart(newVal)
+      }
+    }
+  },
+  methods: {
+    updateChart(chartData) {
+      var newData = chartData
+
+      this.$refs.chart.updateSeries([
+        {
+          name: 'Dados em barra',
+          type: 'column',
+          data: newData,
+          color: '#FFAA05'
+        },
+        {
+          name: 'Dados em linha',
+          type: 'line',
+          data: newData,
+          color: '#00FF66'
+        }
+      ])
     }
   }
 }

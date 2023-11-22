@@ -2,12 +2,19 @@
   <header class="header-container">
     <div class="header-content">
       <nav>
-        <router-link to="/">Home</router-link>
-        <router-link to="/about">About</router-link>
-        <router-link to="/contact">Contact</router-link>
+        <router-link
+          v-bind:style="activePage === 'Dashboard' ? 'color: #ffaa05;' : ''"
+          to="/"
+          >Dashboard</router-link
+        >
+        <router-link
+          v-bind:style="activePage === 'Customers' ? 'color: #ffaa05;' : ''"
+          to="customers"
+          >Clientes</router-link
+        >
       </nav>
       <div>
-        <p>Olá, Rodrigo Rebelo</p>
+        <p>{{ welcomeMessage() }}</p>
       </div>
     </div>
   </header>
@@ -19,12 +26,44 @@ export default {
   components: {},
   data() {
     return {}
+  },
+  methods: {
+    welcomeMessage() {
+      const now = new Date()
+      const hour = now.getHours()
+
+      if (hour >= 5 && hour < 12) {
+        return 'Bom dia, bem vindo novamente!'
+      } else if (hour >= 12 && hour < 18) {
+        return 'Boa tarde, bem vindo novamente!'
+      } else {
+        return 'Boa noite, bem vindo novamente!'
+      }
+    }
+  },
+  computed: {
+    activePage() {
+      const path = this.$route.path
+      if (path === '/') {
+        return 'Dashboard'
+      } else if (path === '/customers') {
+        return 'Customers'
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.activated-route {
+  color: red !important;
+}
+
 .header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,6 +73,8 @@ export default {
   top: 0;
   background: #222222;
   z-index: 9999;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
 .header-content {
