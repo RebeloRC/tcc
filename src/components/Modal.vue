@@ -19,13 +19,19 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="(item, index) in tableData" :key="index">
-                <tr class="teste" style="border-bottom: 2px solid #5b5b5b">
-                  <td @click="toggleAccordion(item)">{{ item.cliente }}</td>
-                  <td @click="toggleAccordion(item)">{{ item.dataCompra }}</td>
-                  <td @click="toggleAccordion(item)">{{ item.quantidade }}</td>
+              <template v-for="(sale, index) in sales" :key="index">
+                <tr class="table-body" style="border-bottom: 2px solid #5b5b5b">
+                  <td @click="toggleAccordion(sale)">
+                    {{ sale.nome_cliente }}
+                  </td>
+                  <td @click="toggleAccordion(sale)">
+                    {{ formatarDataVenda(sale.data_venda) }}
+                  </td>
+                  <td @click="toggleAccordion(sale)">
+                    {{ sale.produtos_comprados_junto?.length }}
+                  </td>
                 </tr>
-                <tr v-if="item.showAssociatedProducts">
+                <tr v-if="sale.open">
                   <td :colspan="3" style="background-color: #3c3c3c">
                     <h3 style="text-align: left">Produtos Associados</h3>
                     <table style="width: 100%">
@@ -33,20 +39,20 @@
                         <tr>
                           <th>Produto</th>
                           <th>Categoria</th>
-                          <th>Quantidade</th>
+                          <th>Preço</th>
                         </tr>
                       </thead>
                       <tbody>
                         <template
                           v-for="(
                             associatedProduct, index
-                          ) in item.associatedProducts"
+                          ) in sale.produtos_comprados_junto"
                           :key="index"
                         >
-                          <tr class="teste">
-                            <td>{{ associatedProduct.nome }}</td>
-                            <td>{{ associatedProduct.categoria }}</td>
-                            <td>{{ associatedProduct.quantidade }}</td>
+                          <tr class="table-body">
+                            <td>{{ associatedProduct.produto_comprado }}</td>
+                            <td>{{ associatedProduct.categoria_comprada }}</td>
+                            <td>R${{ associatedProduct.preco_comprado }}</td>
                           </tr>
                         </template>
                       </tbody>
@@ -69,14 +75,19 @@
   </transition>
 </template>
 <script>
+import { dateDefaultFormatWithoutTime } from '../utils/dateUtils'
+
 export default {
   name: 'Modal',
   props: {
     showModal: Boolean,
-    modalType: String
+    modalType: String,
+    modalProductId: Number
   },
   data() {
     return {
+      sales: [],
+
       tableData: [
         {
           cliente: 'Cliente 1',
@@ -104,13 +115,17 @@ export default {
   watch: {
     showModal(newVal) {
       if (newVal) {
-        this.makeRequest()
+        this.getSales(this.modalProductId, this.modalType)
       }
     }
   },
   methods: {
+    formatarDataVenda(dataString) {
+      return dateDefaultFormatWithoutTime(dataString)
+    },
+
     toggleAccordion(product) {
-      product.showAssociatedProducts = !product.showAssociatedProducts
+      product.open = !product.open
     },
 
     closeModal() {
@@ -118,18 +133,20 @@ export default {
       console.log('Fechou!')
     },
 
-    makeRequest() {
-      if (this.modalType === 'PIX') {
-        console.log('Fazendo requisição do PIX...')
-      } else if (this.modalType === 'PARCELADO') {
-        console.log('Fazendo requisição do PARCELADO...')
-      } else if (this.modalType === 'BOLETO') {
-        console.log('Fazendo requisição do BOLETO...')
-      } else if (this.modalType === 'DEBITO') {
-        console.log('Fazendo requisição do DEBITO...')
-      } else {
-        console.log('Modal type não encontrado!')
-      }
+    async getSales(producId, paymentMethod) {
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/produtos/info/vendas?id=${producId}&type=${paymentMethod}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      const data = await response.json()
+      this.sales = data
     }
   }
 }
@@ -198,11 +215,11 @@ export default {
       padding: 10px;
     }
 
-    tbody .teste {
+    tbody .table-body {
       transition: 0.3s;
     }
 
-    tbody .teste:hover {
+    tbody .table-body:hover {
       background-color: #5b5b5b;
     }
   }
