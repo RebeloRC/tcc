@@ -5,12 +5,12 @@
         <router-link
           v-bind:style="activePage === 'Dashboard' ? 'color: #ffaa05;' : ''"
           to="/"
-          >Dashboard</router-link
+          ><i class="bi bi-speedometer2"></i> Dashboard</router-link
         >
         <router-link
           v-bind:style="activePage === 'Customers' ? 'color: #ffaa05;' : ''"
           to="customers"
-          >Clientes</router-link
+          ><i class="bi bi-people-fill"></i> Clientes</router-link
         >
       </nav>
       <div>
@@ -55,10 +55,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.activated-route {
-  color: red !important;
-}
-
 .header-container {
   position: fixed;
   top: 0;

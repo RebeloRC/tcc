@@ -19,7 +19,9 @@
                   v-model="selectedProduct"
                   @change="this.getProductDetail(selectedProduct)"
                 >
-                  <option selected value="" disabled>Please select one</option>
+                  <option selected value="" disabled>
+                    Selecione um produto
+                  </option>
                   <option
                     v-for="(product, index) in avaliableProducts"
                     :key="index"
@@ -31,58 +33,86 @@
                 <div>&#9660;</div>
               </div>
             </div>
-            <div class="card-body">
-              <div class="card-body-content">
-                <div class="img-container">
-                  <img :src="productCurrentinView.url_photo" alt="Heineken" />
-                </div>
-                <div class="card-content-container">
-                  <h3 style="text-align: left">
-                    {{ productCurrentinView.produto_nome }}
-                  </h3>
-                  <div class="card-content-detail">
-                    <p>Valor:</p>
-                    <b>R$ {{ productCurrentinView.produto_preco }}</b>
-                  </div>
-                  <div class="card-content-detail">
-                    <p>Vendidos:</p>
-                    <b>{{ productCurrentinView.historico_vendas?.length }}</b>
-                  </div>
-                  <div class="card-content-detail">
-                    <p>Principal método:</p>
-                    <b>{{ productCurrentinView.metodo_principal_pagamento }}</b>
+            <template v-if="loadingData"> <DefaultSpinner /> </template>
+            <template v-if="!selectedProduct && !loadingData">
+              <div class="card-body">
+                <div class="card-body-content">
+                  <div class="card-nodata-container">
+                    <h3>Selecione um produto</h3>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="sales-card-container">
-            <h3>Vendas Relacionadas</h3>
-            <div class="sales-card">
-              <div class="sales-card-header">
-                <p>Item</p>
-                <p>Confiaça</p>
-                <p>Lift</p>
-              </div>
-
-              <template
-                v-for="(
-                  recomendacao, index
-                ) in productCurrentinView?.recomendacoes"
-                :key="index"
-              >
-                <div class="sales-card-datail">
-                  <p>{{ recomendacao.produto_consequentemente_comprado }}</p>
-                  <div class="progress-container">
-                    <div
-                      class="bar-progress"
-                      :style="{ width: recomendacao.confianca + '%' }"
-                    >
-                      <p>{{ recomendacao.confianca + '%' }}</p>
+            </template>
+            <template v-else>
+              <div class="card-body">
+                <div class="card-body-content">
+                  <div class="img-container">
+                    <img :src="productCurrentinView.url_photo" alt="Heineken" />
+                  </div>
+                  <div class="card-content-container">
+                    <h3 style="text-align: left">
+                      {{ productCurrentinView.produto_nome }}
+                    </h3>
+                    <div class="card-content-detail">
+                      <p>Valor:</p>
+                      <b>R$ {{ productCurrentinView.produto_preco }}</b>
+                    </div>
+                    <div class="card-content-detail">
+                      <p>Vendidos:</p>
+                      <b>{{ productCurrentinView.historico_vendas?.length }}</b>
+                    </div>
+                    <div class="card-content-detail">
+                      <p>Principal método:</p>
+                      <b>{{
+                        productCurrentinView.metodo_principal_pagamento
+                      }}</b>
                     </div>
                   </div>
-                  <p>{{ recomendacao.lift.toFixed(2) }}</p>
                 </div>
+              </div>
+            </template>
+          </div>
+          <div class="sales-card-container">
+            <h3>Vendas Relacionadas <i class="bi bi-bar-chart-steps"></i></h3>
+            <div class="sales-card">
+              <template v-if="loadingData">
+                <DefaultSpinner />
+              </template>
+              <template v-if="!selectedProduct && !loadingData">
+                <div class="card-nodata-container">
+                  <h3>Nenhum produto selecionado</h3>
+                </div>
+              </template>
+              <template v-else>
+                <div class="sales-card-header">
+                  <p>Item</p>
+                  <p>Confiaça</p>
+                  <p>Lift</p>
+                </div>
+
+                <template
+                  v-for="(
+                    recomendacao, index
+                  ) in productCurrentinView?.recomendacoes"
+                  :key="index"
+                >
+                  <div class="sales-card-datail">
+                    <p>
+                      <b>{{
+                        recomendacao.produto_consequentemente_comprado
+                      }}</b>
+                    </p>
+                    <div class="progress-container">
+                      <div
+                        class="bar-progress"
+                        :style="{ width: recomendacao.confianca + '%' }"
+                      >
+                        <p>{{ recomendacao.confianca + '%' }}</p>
+                      </div>
+                    </div>
+                    <p>{{ recomendacao.lift.toFixed(0) }}</p>
+                  </div>
+                </template>
               </template>
             </div>
           </div>
@@ -99,7 +129,7 @@
                 )
               "
             >
-              <h4>DÉBITO</h4>
+              <h4>DÉBITO <i class="bi bi-cash-stack"></i></h4>
               <p>{{ productCurrentinView.débito }}</p>
               <h5>vendas</h5>
             </div>
@@ -113,7 +143,7 @@
                 )
               "
             >
-              <h4>BOLETO</h4>
+              <h4>BOLETO <i class="bi bi-receipt"></i></h4>
               <p>{{ productCurrentinView.boleto }}</p>
               <h5>vendas</h5>
             </div>
@@ -124,7 +154,7 @@
                 openModalWithRequestType(productCurrentinView.produto_id, 'pix')
               "
             >
-              <h4>PIX</h4>
+              <h4>PIX <i class="bi bi-x-diamond-fill"></i></h4>
               <p>{{ productCurrentinView.pix }}</p>
               <h5>vendas</h5>
             </div>
@@ -138,14 +168,16 @@
                 )
               "
             >
-              <h4>PARCELADO</h4>
+              <h4>CRÉDITO <i class="bi bi-credit-card"></i></h4>
               <p>{{ productCurrentinView.credito }}</p>
               <h5>vendas</h5>
             </div>
           </div>
         </section>
         <section class="sales-history-section">
-          <h3><b>Historico de vendas</b></h3>
+          <h3>
+            <b>Historico de vendas <i class="bi bi-bar-chart-line-fill"></i></b>
+          </h3>
           <Chart
             :series-data="productCurrentinView?.quantidade_por_mes"
           ></Chart>
@@ -155,19 +187,24 @@
   </div>
 </template>
 <script>
+// import Spinner from '@/components/Spinner.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import Chart from '../components/Chart.vue'
 import Modal from '../components/Modal.vue'
+import DefaultSpinner from '../components/spinners/DefaultSpinner.vue'
 
 export default {
   name: 'DashboardPage',
   components: {
     HeaderComponent,
     Chart,
-    Modal
+    Modal,
+    DefaultSpinner
   },
   data() {
     return {
+      loadingData: true,
+
       selectedProduct: '',
       productCurrentinView: {},
 
@@ -183,17 +220,25 @@ export default {
   },
   methods: {
     async getProducts() {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/produtos`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+      try {
+        this.loadingData = true
+
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/produtos`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
-        }
-      )
-      const data = await response.json()
-      this.avaliableProducts = data
+        )
+        const data = await response.json()
+        this.avaliableProducts = data
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loadingData = false
+      }
     },
 
     openModalWithRequestType(productId, type) {
@@ -203,23 +248,42 @@ export default {
     },
 
     async getProductDetail(ProductId) {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/produtos/info?id=${ProductId}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+      try {
+        this.loadingData = true
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/produtos/info?id=${ProductId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
-        }
-      )
-      const data = await response.json()
-      this.productCurrentinView = data[0]
+        )
+        const data = await response.json()
+        this.productCurrentinView = data[0]
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loadingData = false
+      }
     }
   }
 }
 </script>
 
 <style lang="scss">
+.card-nodata-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  h3 {
+    margin-top: 4rem;
+    font-size: 1.5rem;
+  }
+}
+
 .container {
   margin-top: 7.5rem;
 }
@@ -264,6 +328,8 @@ export default {
     gap: 10px;
 
     .payment-method {
+      cursor: pointer;
+
       width: 100%;
       max-width: 23.75rem;
       height: 12.56rem;
@@ -274,6 +340,12 @@ export default {
       border-radius: 20px;
 
       background-color: #494949;
+
+      transition: all 0.2s;
+
+      &:hover {
+        transform: scale(1.05);
+      }
 
       h4 {
         text-align: right;

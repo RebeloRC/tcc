@@ -108,3 +108,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.apexcharts-tooltip {
+  background: white;
+  color: black;
+}
+</style>

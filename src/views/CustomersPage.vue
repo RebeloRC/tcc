@@ -27,69 +27,74 @@
             <h1>Clientes</h1>
           </header>
 
-          <section class="modal-body">
-            <table class="custom-table">
-              <thead>
-                <tr style="font-size: 1.5rem">
-                  <th>Cliente</th>
-                  <th>Perfil do cliente</th>
-                  <th>Idade</th>
-                </tr>
-              </thead>
-              <tbody>
-                <template v-for="(customer, index) in customers" :key="index">
-                  <tr
-                    class="table-body"
-                    style="border-bottom: 2px solid #5b5b5b"
-                  >
-                    <td @click="toggleAccordion(customer)">
-                      {{ customer.cliente_nome }}
-                    </td>
-                    <td @click="toggleAccordion(customer)">
-                      {{ customer.cliente_cluster }}
-                    </td>
-                    <td @click="toggleAccordion(customer)">
-                      {{ customer.cliente_idade }}
-                    </td>
+          <template v-if="loadingData">
+            <DefaultSpinnerVue />
+          </template>
+          <template v-else>
+            <section class="modal-body">
+              <table class="custom-table">
+                <thead>
+                  <tr style="font-size: 1.5rem">
+                    <th>Cliente</th>
+                    <th>Perfil do cliente</th>
+                    <th>Idade</th>
                   </tr>
-                  <tr v-if="customer.open">
-                    <td :colspan="3" style="background-color: #3c3c3c">
-                      <h3 style="text-align: left">Histórico de compras</h3>
-                      <table style="width: 100%">
-                        <thead>
-                          <tr>
-                            <th>Produto</th>
-                            <th>Preço</th>
-                            <th>Data</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <template
-                            v-for="(
-                              associatedProduct, index
-                            ) in customer.compras"
-                            :key="index"
-                          >
-                            <tr class="table-body">
-                              <td>{{ associatedProduct.produto_nome }}</td>
-                              <td>R${{ associatedProduct.produto_preco }}</td>
-                              <td>
-                                {{
-                                  formatarDataVenda(
-                                    associatedProduct.data_compra
-                                  )
-                                }}
-                              </td>
+                </thead>
+                <tbody>
+                  <template v-for="(customer, index) in customers" :key="index">
+                    <tr
+                      class="table-body"
+                      style="border-bottom: 2px solid #5b5b5b"
+                    >
+                      <td @click="toggleAccordion(customer)">
+                        {{ customer.cliente_nome }}
+                      </td>
+                      <td @click="toggleAccordion(customer)">
+                        {{ customer.cliente_cluster }}
+                      </td>
+                      <td @click="toggleAccordion(customer)">
+                        {{ customer.cliente_idade }}
+                      </td>
+                    </tr>
+                    <tr v-if="customer.open">
+                      <td :colspan="3" style="background-color: #3c3c3c">
+                        <h3 style="text-align: left">Histórico de compras</h3>
+                        <table style="width: 100%">
+                          <thead>
+                            <tr>
+                              <th>Produto</th>
+                              <th>Preço</th>
+                              <th>Data</th>
                             </tr>
-                          </template>
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </section>
+                          </thead>
+                          <tbody>
+                            <template
+                              v-for="(
+                                associatedProduct, index
+                              ) in customer.compras"
+                              :key="index"
+                            >
+                              <tr class="table-body">
+                                <td>{{ associatedProduct.produto_nome }}</td>
+                                <td>R${{ associatedProduct.produto_preco }}</td>
+                                <td>
+                                  {{
+                                    formatarDataVenda(
+                                      associatedProduct.data_compra
+                                    )
+                                  }}
+                                </td>
+                              </tr>
+                            </template>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </section>
+          </template>
         </div>
       </div>
     </div>
@@ -101,14 +106,17 @@ import { dateDefaultFormatWithoutTime } from '../utils/dateUtils'
 
 import HeaderComponent from '../components/HeaderComponent.vue'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import DefaultSpinnerVue from '../components/spinners/DefaultSpinner.vue'
 
 export default {
   name: 'CustomersPage',
   components: {
-    HeaderComponent
+    HeaderComponent,
+    DefaultSpinnerVue
   },
   data() {
     return {
+      loadingData: true,
       customers: [],
 
       categoryFilter: ''
@@ -123,19 +131,27 @@ export default {
     },
 
     async filterCustomersByCategory(category) {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/clientes/segmentacao?segmento=${category}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+      try {
+        this.loadingData = true
+
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/clientes/segmentacao?segmento=${category}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
-        }
-      )
-      const data = await response.json()
-      this.customers = data
+        )
+        const data = await response.json()
+        this.customers = data
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loadingData = false
+      }
     },
 
     toggleAccordion(product) {
@@ -143,19 +159,27 @@ export default {
     },
 
     async getCustomers() {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/clientes/segmentacao?segmento=Informatica`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+      try {
+        this.loadingData = true
+
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/clientes/segmentacao?segmento=Informatica`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
-        }
-      )
-      const data = await response.json()
-      this.customers = data
+        )
+        const data = await response.json()
+        this.customers = data
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loadingData = false
+      }
     }
   }
 }

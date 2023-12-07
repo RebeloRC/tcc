@@ -10,75 +10,82 @@
         </header>
 
         <section class="modal-body">
-          <table class="custom-table">
-            <thead>
-              <tr style="font-size: 1.5rem">
-                <th>Cliente</th>
-                <th>Data de Compra</th>
-                <th>Quantidade</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(sale, index) in sales" :key="index">
-                <tr class="table-body" style="border-bottom: 2px solid #5b5b5b">
-                  <td @click="toggleAccordion(sale)">
-                    {{ sale.nome_cliente }}
-                  </td>
-                  <td @click="toggleAccordion(sale)">
-                    {{ formatarDataVenda(sale.data_venda) }}
-                  </td>
-                  <td @click="toggleAccordion(sale)">
-                    {{ sale.produtos_comprados_junto?.length }}
-                  </td>
+          <template v-if="loadingSales">
+            <DefaultSpinnerVue />
+          </template>
+          <template v-else>
+            <table class="custom-table">
+              <thead>
+                <tr style="font-size: 1.5rem">
+                  <th>Cliente</th>
+                  <th>Data de Compra</th>
+                  <th>Quantidade</th>
                 </tr>
-                <tr v-if="sale.open">
-                  <td :colspan="3" style="background-color: #3c3c3c">
-                    <h3 style="text-align: left">Produtos Associados</h3>
-                    <table style="width: 100%">
-                      <thead>
-                        <tr>
-                          <th>Produto</th>
-                          <th>Categoria</th>
-                          <th>Preço</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <template
-                          v-for="(
-                            associatedProduct, index
-                          ) in sale.produtos_comprados_junto"
-                          :key="index"
-                        >
-                          <tr class="table-body">
-                            <td>{{ associatedProduct.produto_comprado }}</td>
-                            <td>{{ associatedProduct.categoria_comprada }}</td>
-                            <td>R${{ associatedProduct.preco_comprado }}</td>
+              </thead>
+              <tbody>
+                <template v-for="(sale, index) in sales" :key="index">
+                  <tr
+                    class="table-body"
+                    style="border-bottom: 2px solid #5b5b5b"
+                  >
+                    <td @click="toggleAccordion(sale)">
+                      {{ sale.nome_cliente }}
+                    </td>
+                    <td @click="toggleAccordion(sale)">
+                      {{ formatarDataVenda(sale.data_venda) }}
+                    </td>
+                    <td @click="toggleAccordion(sale)">
+                      {{ sale.produtos_comprados_junto?.length }}
+                    </td>
+                  </tr>
+                  <tr v-if="sale.open">
+                    <td :colspan="3" style="background-color: #3c3c3c">
+                      <h3 style="text-align: left">Produtos Associados</h3>
+                      <table style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
                           </tr>
-                        </template>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+                        </thead>
+                        <tbody>
+                          <template
+                            v-for="(
+                              associatedProduct, index
+                            ) in sale.produtos_comprados_junto"
+                            :key="index"
+                          >
+                            <tr class="table-body">
+                              <td>{{ associatedProduct.produto_comprado }}</td>
+                              <td>
+                                {{ associatedProduct.categoria_comprada }}
+                              </td>
+                              <td>R${{ associatedProduct.preco_comprado }}</td>
+                            </tr>
+                          </template>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </template>
         </section>
-
-        <!-- <footer class="modal-footer">
-          <slot name="footer"> This is the default footer! </slot>
-          <button type="button" class="btn-green" @click="closeModal()">
-            Close Modal
-          </button>
-        </footer> -->
       </div>
     </div>
   </transition>
 </template>
 <script>
 import { dateDefaultFormatWithoutTime } from '../utils/dateUtils'
+import DefaultSpinnerVue from './spinners/DefaultSpinner.vue'
 
 export default {
   name: 'Modal',
+  components: {
+    DefaultSpinnerVue
+  },
   props: {
     showModal: Boolean,
     modalType: String,
@@ -86,30 +93,8 @@ export default {
   },
   data() {
     return {
-      sales: [],
-
-      tableData: [
-        {
-          cliente: 'Cliente 1',
-          dataCompra: '10/01/2023',
-          quantidade: 5,
-          showAssociatedProducts: false,
-          associatedProducts: [
-            { nome: 'Produto A', categoria: 'Categoria X', quantidade: 2 },
-            { nome: 'Produto B', categoria: 'Categoria Y', quantidade: 3 }
-          ]
-        },
-        {
-          cliente: 'Cliente 2',
-          dataCompra: '10/01/2023',
-          quantidade: 5,
-          showAssociatedProducts: false,
-          associatedProducts: [
-            { nome: 'Produto C', categoria: 'Categoria X', quantidade: 2 },
-            { nome: 'Produto D', categoria: 'Categoria Y', quantidade: 3 }
-          ]
-        }
-      ]
+      loadingSales: false,
+      sales: []
     }
   },
   watch: {
@@ -134,19 +119,27 @@ export default {
     },
 
     async getSales(producId, paymentMethod) {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/produtos/info/vendas?id=${producId}&type=${paymentMethod}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+      try {
+        this.loadingSales = true
+
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/produtos/info/vendas?id=${producId}&type=${paymentMethod}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
-        }
-      )
-      const data = await response.json()
-      this.sales = data
+        )
+        const data = await response.json()
+        this.sales = data
+      } catch (error) {
+        cosnole.log(error)
+      } finally {
+        this.loadingSales = false
+      }
     }
   }
 }
