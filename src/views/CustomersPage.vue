@@ -14,11 +14,21 @@
                 <i>Selecione uma categoria</i>
               </option>
               <option value="Informatica">Informatica</option>
+              <option value="Calcados">Calcados</option>
+              <option value="Livros">Livros</option>
+              <option value="Decoracao">Decoração</option>
             </select>
           </div>
           <div class="buttons-container">
-            <button class="btn-search"><i class="bi bi-search"></i></button>
-            <button class="btn-delete"><i class="bi bi-x"></i></button>
+            <button
+              class="btn-search"
+              @click="filterCustomersByCategory(categoryFilter)"
+            >
+              <i class="bi bi-search"></i>
+            </button>
+            <button class="btn-delete" @click="clearFilter()">
+              <i class="bi bi-x"></i>
+            </button>
           </div>
         </div>
 
@@ -123,11 +133,16 @@ export default {
     }
   },
   mounted() {
-    this.getCustomers()
+    this.getAllCustomers()
   },
   methods: {
     formatarDataVenda(dataString) {
       return dateDefaultFormatWithoutTime(dataString)
+    },
+
+    clearFilter() {
+      this.categoryFilter = ''
+      this.getAllCustomers()
     },
 
     async filterCustomersByCategory(category) {
@@ -158,14 +173,12 @@ export default {
       product.open = !product.open
     },
 
-    async getCustomers() {
+    async getAllCustomers() {
       try {
         this.loadingData = true
 
         const response = await fetch(
-          `${
-            import.meta.env.VITE_API_BASE_URL
-          }/clientes/segmentacao?segmento=Informatica`,
+          `${import.meta.env.VITE_API_BASE_URL}/clientes/segmentacao`,
           {
             method: 'GET',
             headers: {
