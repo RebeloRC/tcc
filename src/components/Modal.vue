@@ -115,7 +115,6 @@ export default {
 
     closeModal() {
       this.$emit('close-modal')
-      console.log('Fechou!')
     },
 
     async getSales(producId, paymentMethod) {

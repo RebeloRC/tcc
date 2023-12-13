@@ -34,7 +34,7 @@
               </div>
             </div>
             <template v-if="loadingData"> <DefaultSpinner /> </template>
-            <template v-if="!selectedProduct && !loadingData">
+            <template v-else-if="!selectedProduct && !loadingData">
               <div class="card-body">
                 <div class="card-body-content">
                   <div class="card-nodata-container">
@@ -78,7 +78,7 @@
               <template v-if="loadingData">
                 <DefaultSpinner />
               </template>
-              <template v-if="!selectedProduct && !loadingData">
+              <template v-else-if="!selectedProduct && !loadingData">
                 <div class="card-nodata-container">
                   <h3>Nenhum produto selecionado</h3>
                 </div>
@@ -164,7 +164,7 @@
               @click="
                 openModalWithRequestType(
                   productCurrentinView.produto_id,
-                  'PARCELADO'
+                  'credito'
                 )
               "
             >

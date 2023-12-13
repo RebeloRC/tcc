@@ -17,6 +17,7 @@
               <option value="Calcados">Calcados</option>
               <option value="Livros">Livros</option>
               <option value="Decoracao">Decoração</option>
+              <option value="Eletrodomesticos">Eletrodomésticos</option>
             </select>
           </div>
           <div class="buttons-container">

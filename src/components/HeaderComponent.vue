@@ -5,12 +5,14 @@
         <router-link
           v-bind:style="activePage === 'Dashboard' ? 'color: #ffaa05;' : ''"
           to="/"
-          ><i class="bi bi-speedometer2"></i> Dashboard</router-link
+          ><i class="bi bi-arrows-angle-contract"></i> Regras de
+          associação</router-link
         >
         <router-link
           v-bind:style="activePage === 'Customers' ? 'color: #ffaa05;' : ''"
           to="customers"
-          ><i class="bi bi-people-fill"></i> Clientes</router-link
+          ><i class="bi bi-people-fill"></i> Segmentação por
+          cliente</router-link
         >
       </nav>
       <div>
